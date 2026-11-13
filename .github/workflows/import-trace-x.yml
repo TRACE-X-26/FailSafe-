@@ -24,7 +24,7 @@ jobs:
       - name: Import complete dashboard backend and firmware
         shell: bash
         run: |
-          rsync -a --delete --exclude=.git --exclude=source/ source/ ./
+          rsync -a --delete --exclude=.git --exclude='/.github/workflows/***' --exclude=source/ source/ ./
           rm -rf source
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
