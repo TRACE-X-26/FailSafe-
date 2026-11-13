@@ -1,0 +1,33 @@
+name: Import TRACE-X Expo Telemetry
+on:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/import-trace-x.yml']
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  import:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout FailSafe destination
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Checkout TRACE-X Expo source
+        uses: actions/checkout@v4
+        with:
+          repository: TRACE-X-26/Expo
+          ref: main
+          path: source
+          persist-credentials: false
+      - name: Import complete dashboard backend and firmware
+        shell: bash
+        run: |
+          rsync -a --delete --exclude=.git --exclude=source/ source/ ./
+          rm -rf source
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "Import Expo read-only live telemetry, backend and STM32 firmware" || exit 0
+          git push origin HEAD:main
